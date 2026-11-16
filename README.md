@@ -27,3 +27,10 @@ The problem is measuring clock skew without a trusted time source. A single roun
 
 - `Sample(client_send, server_recv, server_send, client_recv)` — one round trip. Exposes `.round_trip`, `.server_turnaround`, `.offset`, and `.is_valid()`.
 - `SkewEstimator()` — `.add(sample) -> bool`, `.add_many(samples) -> int`, `.count`, `.estimate() -> float | None`, `.reset()`.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
